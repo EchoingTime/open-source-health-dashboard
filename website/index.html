@@ -1,0 +1,41 @@
+<!--
+@File: index.html
+@Author: Dante Anzalone
+@Created: 2025-08-28
+@Last Modified: 2025-05-28
+@Description: Main entry point for the Open Source Health Dashboard web application.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Open Source Health Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!--===--=== Nav ===--===-->
+    <nav>
+      <ul>
+        <li>Open Source Health Dashboard</li>
+      </ul>
+    </nav>
+    <!--===--=== Main ===--===-->
+    <main>
+      <h1>Analyze Public GitHub Repository</h1>
+      <section id="dashboard">
+        <form>
+          <input id="repo" placeholder="Enter Repository Link" type="text" />
+          <input id="submit" type="submit" />
+        </form>
+        <!--=== Health Checklist ===-->
+        <section id="health-checklist">
+          <h2>Health Checklist</h2>
+          <ul id="checklist"></ul>
+        </section>
+      </section>
+    </main>
+    <script src="index.js" defer></script>
+  </body>
+</html>
