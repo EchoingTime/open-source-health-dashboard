@@ -5,3 +5,9 @@
 @Last Modified: 2025-05-28
 @Description: Implements interactivity and application logic for the Open Source Health Dashboard.
 */
+
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("analyze-repo-form").addEventListener("submit", function (event) {
+    event.preventDefault();
+  });
+});

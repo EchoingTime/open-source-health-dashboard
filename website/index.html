@@ -13,6 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Open Source Health Dashboard</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="index.js"></script>
   </head>
   <body>
     <!--===--=== Nav ===--===-->
@@ -25,17 +26,16 @@
     <main>
       <h1>Analyze Public GitHub Repository</h1>
       <section id="dashboard">
-        <form>
-          <input id="repo" placeholder="Enter Repository Link" type="text" />
-          <input id="submit" type="submit" />
+        <form id="repo-form">
+          <input type="url" id="repo-url" name="repo-url" placeholder="https://github.com/owner/repo" required />
+          <button>Generate</button>
         </form>
         <!--=== Health Checklist ===-->
         <section id="health-checklist">
-          <h2>Health Checklist</h2>
+          <h3>Health Checklist</h3>
           <ul id="checklist"></ul>
         </section>
       </section>
     </main>
-    <script src="index.js" defer></script>
   </body>
 </html>

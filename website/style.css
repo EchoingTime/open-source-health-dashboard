@@ -12,7 +12,10 @@
   --bg: #0b0f14;
   --header: #00468d;
   --text: #e6eef6;
+  --faded-text: #636363b9;
   --line: #222831;
+  --button: #2070c1;
+  --hover: #4b98e5;
 }
 
 /*--===--=== Reset & Base ===--===--*/
@@ -62,6 +65,8 @@ main {
 h1 {
   justify-self: center;
   color: var(--header);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
 }
 
 #dashboard {
@@ -71,14 +76,49 @@ h1 {
   justify-self: center;
 }
 
-input {
-  padding: 0.5rem;
+#repo-form {
+  display: flex;
+  gap: 0.75rem;
 }
-#submit:hover {
+#repo-url {
+  background-color: var(--text);
+  width: 192.5px;
+}
+#repo-url::placeholder {
+  color: var(--faded-text);
+  font-style: italic;
+}
+#repo-url,
+button {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--line);
+}
+button {
+  background-color: var(--button);
+  color: var(--text);
+  font-weight: bold;
+}
+button:hover {
   cursor: pointer;
+  background-color: var(--hover);
 }
 
 #dashboard,
 #health-checklist {
   margin-top: 1rem;
+}
+
+#health-checklist {
+  border: 1px solid var(--line);
+  border-radius: 0.25rem;
+  padding: 1rem;
+}
+h3 {
+  margin-bottom: 0.5rem;
+}
+#health-checklist li {
+  border-top: 1px solid var(--line);
+  list-style-type: none;
+  padding-top: 0.5rem;
 }
