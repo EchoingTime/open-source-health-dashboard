@@ -6,8 +6,6 @@ A web application that analyzes a public GitHub repository and provides a "healt
 
 ## Setup
 
-### Start the application
-
 - Run the container:
   - docker-compose up
 

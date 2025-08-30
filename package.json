@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint website/*.js",
-    "test": "echo \"No tests yet\"",
-    "build": "echo \"No build yet\""
+    "test": "echo \"No tests yet\""
   },
   "repository": {
     "type": "git",
@@ -21,6 +20,8 @@
   },
   "homepage": "https://github.com/EchoingTime/open-source-health-dashboard#readme",
   "devDependencies": {
-    "eslint": "^9.34.0"
+    "@eslint/js": "^9.34.0",
+    "eslint": "^9.34.0",
+    "globals": "^16.3.0"
   }
 }
