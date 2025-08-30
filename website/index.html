@@ -2,7 +2,7 @@
 @File: index.html
 @Author: Dante Anzalone
 @Created: 2025-08-28
-@Last Modified: 2025-05-28
+@Last Modified: 2025-08-29
 @Description: Main entry point for the Open Source Health Dashboard web application.
 -->
 
@@ -13,22 +13,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Open Source Health Dashboard</title>
     <link rel="stylesheet" href="style.css" />
-    <script src="index.js"></script>
   </head>
   <body>
-    <!--===--=== Nav ===--===-->
+    <!--===--===--=== Nav ===--===--===-->
     <nav>
       <ul>
         <li>Open Source Health Dashboard</li>
       </ul>
     </nav>
-    <!--===--=== Main ===--===-->
+    <!--===--===--=== Main ===--===--===-->
     <main>
       <h1>Analyze Public GitHub Repository</h1>
       <section id="dashboard">
+        <!--===--=== HTML Form Setup ===--===-->
         <form id="repo-form">
           <input type="url" id="repo-url" name="repo-url" placeholder="https://github.com/owner/repo" required />
-          <button>Generate</button>
+          <button>Run</button>
         </form>
         <!--=== Health Checklist ===-->
         <section id="health-checklist">
@@ -37,5 +37,6 @@
         </section>
       </section>
     </main>
+    <script src="index.js" defer></script>
   </body>
 </html>

@@ -2,7 +2,7 @@
 @File: style.css
 @Author: Dante Anzalone
 @Created: 2025-08-28
-@Last Modified: 2025-05-28
+@Last Modified: 2025-08-29
 @Description: Defines styles and layout for the Open Source Health Dashboard.
 */
 
@@ -78,6 +78,7 @@ h1 {
 
 #repo-form {
   display: flex;
+  justify-content: center;
   gap: 0.75rem;
 }
 #repo-url {
