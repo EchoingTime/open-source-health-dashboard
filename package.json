@@ -4,7 +4,7 @@
   "description": "A web application that analyzes a public GitHub repository and provides a \"health report\" on its open-source best practices.",
   "main": "index.js",
   "scripts": {
-    "lint": "npx --no install eslint website/*.js",
+    "lint": "eslint website/*.js",
     "test": "echo \"No tests yet\"",
     "build": "echo \"No build yet\""
   },
