@@ -1,0 +1,26 @@
+{
+  "name": "open-source-health-dashboard",
+  "version": "1.0.0",
+  "description": "A web application that analyzes a public GitHub repository and provides a \"health report\" on its open-source best practices.",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint website/*.js",
+    "test": "echo \"No tests yet\"",
+    "build": "echo \"No build yet\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EchoingTime/open-source-health-dashboard.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/EchoingTime/open-source-health-dashboard/issues"
+  },
+  "homepage": "https://github.com/EchoingTime/open-source-health-dashboard#readme",
+  "devDependencies": {
+    "eslint": "^9.34.0"
+  }
+}
