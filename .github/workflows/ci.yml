@@ -1,0 +1,36 @@
+# File: ci.yml
+# Author: Dante Anzalone
+# Description: Basic CI pipeline that runs lint, tests,
+#              and production build on push to main branch.
+#              The workflow fails if any job fails.
+
+name: Basic CI Pipeline
+
+# Runs automatically whenever pushing to the main branch
+on:
+  push:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest # Standard Ubuntu environment
+    steps:
+      - uses: actions/checkout@v2 # Pulls repo code into the workflow
+      - run: npm install # Installs project dependencies
+      - run: npm run lint # Runs linter script defined in package.json
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint # Runs if lint passes
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm install
+      - run: npm test # Runs tests defined in package.json
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test # Runs if tests passes
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm install
+      - run: npm run build # Build production version of app
