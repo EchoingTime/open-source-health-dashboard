@@ -62,8 +62,8 @@ function parseUrl(url) {
       throw new Error('Invalid repository URL format. Must use the format "https://github.com/owner/repo".');
     }
 
-    const owner = pathNames[0];
-    const repo = pathNames[1];
+    const owner = pathNames[0]; // username/org
+    const repo = pathNames[1]; // repository name
 
     return { owner, repo };
   } catch (e) {
@@ -77,31 +77,126 @@ function parseUrl(url) {
 
 // **In Progress**
 async function fetchData(owner, repo, element) {
-  const apiUrl = `https://api.github.com/repos/${owner}/${repo}`;
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}`; // API URL Metadata
+  const readmeUrl = `${apiUrl}/readme`; // README
+  const gitignoreUrl = `${apiUrl}/contents/.gitignore`; // .gitignore
+  const commitsUrl = `${apiUrl}/commits?per_page=1`; // Commits - URL for retrieving latest commit
+  const workflowsUrl = `${apiUrl}/contents/.github/workflows`; // Workflows directory
+  let fetchDict = {};
 
   try {
-    const response = await fetch(apiUrl);
+    // 1. Main repo data (will always exist) - will check for license within the json
+    const repoData = await fetchJsonOrThrow(apiUrl);
+    fetchDict["repoData"] = repoData;
+    // 2. README (optional)
+    const readmeData = await fetchIfExists(readmeUrl);
+    fetchDict["readmeData"] = readmeData;
+    // 3. Gitignore (optional)
+    const gitignoreData = await fetchIfExists(gitignoreUrl);
+    fetchDict["gitignoreData"] = gitignoreData;
+    // 4. Commits (must exist)
+    const commitsData = await fetchJsonOrThrow(commitsUrl);
+    const latestCommit = commitsData[0]; // Gets the first and only commit
+    const commitDate = latestCommit.commit.author.date; // ISO string
+    const readableCommitDate = new Date(commitDate).toLocaleString();
+    fetchDict["readableCommitDate"] = readableCommitDate;
+    // 5. Workflows (optional)
+    const workflowData = await fetchIfExists(workflowsUrl);
+    fetchDict["workflowData"] = workflowData;
 
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status} - ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    displayData(data, element);
+    // If error is thrown, catch it
   } catch (error) {
     throw new Error(`Failed to fetch repository data. Check the URL: ${error.message}`);
   }
+
+  console.log(fetchDict);
+  const checklistDictionary = checkBestPractices(fetchDict);
+  console.log(checklistDictionary);
+  displayData(checklistDictionary, element);
+}
+
+// Fetch helper - throws if required
+async function fetchJsonOrThrow(url) {
+  const response = await fetch(url); // Makes an HTTP GET request to the GitHub API & GitHub's API returns JSON data
+  // Precaution step if bad response
+  if (!response.ok) {
+    throw new Error(`Error: ${response.status} - ${response.statusText}`);
+  }
+  return await response.json(); // Reading the response's body and parses it as JSON
+}
+
+// Fetch helper: returns false if optional resouce not found (meaning missing)
+async function fetchIfExists(url) {
+  const response = await fetch(url);
+  if (response.status === 404) {
+    return false; // resouce missing
+  }
+  if (!response.ok) {
+    throw new Error(`Error: ${response.status} - ${response.statusText}`);
+  }
+  return await response.json();
+}
+
+function checkBestPractices(data) {
+  let checklistDict = {};
+
+  for (let key in data) {
+    // Checking for a License file
+    if (key === "repoData") {
+      if (data[key].license !== null) {
+        checklistDict["LICENSE"] = "Found";
+      } else {
+        checklistDict["LICENSE"] = "Missing";
+      }
+      // Checking for a README.md file
+    } else if (key === "readmeData") {
+      if (data[key] !== false) {
+        checklistDict["README.md"] = "Found";
+      } else {
+        checklistDict["README.md"] = "Missing";
+      }
+      // Checking for a .gitignore file
+    } else if (key === "gitignoreData") {
+      if (data[key] !== false) {
+        checklistDict[".gitignore"] = "Found";
+      } else {
+        checklistDict[".gitignore"] = "Missing";
+      }
+      // Checking if a commit was made in the last 6 months
+    } else if (key === "readableCommitDate") {
+      const today = new Date(); // Finding current date
+
+      const commitDate = new Date(data[key]); // Turning commit date into date object
+
+      // Finding the six months ago mark
+      const sixMonths = new Date(today);
+      sixMonths.setMonth(today.getMonth() - 6);
+
+      const isWithinSixMonths = commitDate >= sixMonths; // Seeing if commit was pushed within the last 6 months
+
+      if (isWithinSixMonths) {
+        checklistDict["Recently Committed"] = "Yes";
+      } else {
+        checklistDict["Recently Committed"] = "No";
+      }
+      // Checking for a .github/workflows directory
+    } else {
+      console.log(data[key]);
+      if (data[key] === false) {
+        checklistDict[".github/workflows"] = "Missing";
+      } else {
+        checklistDict[".github/workflows"] = "Found";
+      }
+    }
+  }
+  return checklistDict;
 }
 
 // **In Progress**
-function displayData(data, element) {
-  element.innerHTML = `
-    <h2><a href="${data.html_url}" target="_blank">${data.full_name}</a></h2>
-    <p><strong>Description:</strong> ${data.description || "No description provided."}</p>
-    <p><strong>Language:</strong> ${data.language || "N/A"}</p>
-    <p><strong>Stars:</strong> ${data.stargazers_count}</p>
-    <p><strong>Forks:</strong> ${data.forks_count}</p>
-    <p><strong>Open Issues:</strong> ${data.open_issues_count}</p>
-    <p><strong>Default Branch:</strong> ${data.default_branch}</p>
-  `;
+function displayData(checklist, element) {
+  for (const key in checklist) {
+    const li = document.createElement("li");
+    li.innerHTML = `${key}: ${checklist[key]}`;
+    element.append(li);
+  }
 }
