@@ -1,21 +1,22 @@
 /* 
 @File: index.js
 @Author: Dante Anzalone
-@Created: 2025-08-28
-@Last Modified: 2025-08-29
-@Description: Implements interactivity and application logic for the Open Source Health Dashboard.
+@Description: Implements interactivity and application logic for the Open Source Health Dashboard,
+              including handling repository form submissions, fetching GitHub data, and rendering
+              a best practices checklist.
 */
 
 // On form submission, trigger formHandler
 document.getElementById("repo-form").addEventListener("submit", formHandler);
 
 /**
+ * @async
  * @function formHandler
  * @description Handles the repository form submission by parsing the input URL
  *              and triggering a data fetch for repository information.
  * @param {Event} event - The submit event via the HTML repository form.
  * @returns {Promise<void>} Resolves when repository data has been successfully fetched.
- * @throws {Error} If the respitory URL is invalid or data fetching fails.
+ * @throws {Error} If the repository URL is invalid or data fetching fails.
  */
 async function formHandler(event) {
   // Prevent default form behavior (page reload and server submission)
@@ -42,7 +43,7 @@ async function formHandler(event) {
  *              it to obtain the owner and repo. Validation is included to ensure
  *              that it is a GitHub URL.
  * @param {string} url A GitHub Repository Url.
- * @returns {strings} Returns the Repository's owner and name.
+ * @returns {{owner: string, repo: string}} Returns the Repository's owner and name.
  * @throws {Error} If URL is not from github.com or has invalid format.
  */
 function parseUrl(url) {
@@ -75,7 +76,18 @@ function parseUrl(url) {
   }
 }
 
-// **In Progress**
+/**
+ * @async
+ * @function fetchData
+ * @description Fetches repository data from Github (repo info, README, gitignore,
+ *              commits, workflows) and displays a checklist of repository best practices
+ *              in the provided HTML element.
+ * @param {string} owner The owner of the GitHub repository.
+ * @param {string} repo The name of the repository.
+ * @param {HTMLElement} element The ul element where the checklist will be displayed.
+ * @returns {void} Nothing is returned; updates the provided HTML element.
+ * @throws {Error} If failing to fetch repository data.
+ */
 async function fetchData(owner, repo, element) {
   const apiUrl = `https://api.github.com/repos/${owner}/${repo}`; // API URL Metadata
   const readmeUrl = `${apiUrl}/readme`; // README
@@ -109,34 +121,63 @@ async function fetchData(owner, repo, element) {
     throw new Error(`Failed to fetch repository data. Check the URL: ${error.message}`);
   }
 
-  console.log(fetchDict);
   const checklistDictionary = checkBestPractices(fetchDict);
-  console.log(checklistDictionary);
   displayData(checklistDictionary, element);
 }
 
-// Fetch helper - throws if required
+/**
+ * @async
+ * @function fetchJsonOrThrow
+ * @description Fetch JSON data from a given URL, or throw an error if the response is not
+ *              OK.
+ * @param {string} url An API URL to fetch.
+ * @returns {Promise<Object>} The parsed JSON response.
+ * @throws {Error} If the HTTP response is not ok.
+ */
 async function fetchJsonOrThrow(url) {
-  const response = await fetch(url); // Makes an HTTP GET request to the GitHub API & GitHub's API returns JSON data
+  const response = await fetch(url); // HTTP GET request & returns JSON data
   // Precaution step if bad response
   if (!response.ok) {
     throw new Error(`Error: ${response.status} - ${response.statusText}`);
   }
-  return await response.json(); // Reading the response's body and parses it as JSON
+  return await response.json(); // Parse and return JSON
 }
 
-// Fetch helper: returns false if optional resouce not found (meaning missing)
+/**
+ * @async
+ * @function fetchIfExists
+ * @description Fetch JSON data from a given URL. Returns false if the
+ *              resouce is missing (404), otherwise returns the parsed JSON.
+ *              Throws an error for other failed HTTP responses.
+ * @param {string} url An API URL to fetch.
+ * @returns {Promise<Object>|boolean} Parsed JSON response or false if resource is missing.
+ * @throws {Error} If the HTTP response fails for reasons other than 404.
+ */
 async function fetchIfExists(url) {
   const response = await fetch(url);
   if (response.status === 404) {
-    return false; // resouce missing
+    return false; // resouce not found
   }
   if (!response.ok) {
+    // Status outside 200-299 (except 404) is considered "not ok"
     throw new Error(`Error: ${response.status} - ${response.statusText}`);
   }
-  return await response.json();
+  return await response.json(); // Parse and return JSON
 }
 
+/**
+ * @function checkBestPractices
+ * @description Analyze a repository's data to check for common best practices.
+ * @param {Object} data Object containing repository data:
+ *  - repoData: JSON object with license information.
+ *  - readmeData: Boolean or object indicating if README.md exists.
+ *  - gitignoreData: Boolean or object indicating if .gitignore exists.
+ *  - readableCommitDate: String representing the date of the latest commit.
+ *  - workflowData: Boolean or object indicating if .github/workflows directory exists.
+ * @returns {Object} A dictionary where keys are best practice items and values are:
+ *  - "Found" / "Missing" for files/directories.
+ *  - "Yes" / "No" for whether the latest commit was within the last 6 months.
+ */
 function checkBestPractices(data) {
   let checklistDict = {};
 
@@ -181,7 +222,6 @@ function checkBestPractices(data) {
       }
       // Checking for a .github/workflows directory
     } else {
-      console.log(data[key]);
       if (data[key] === false) {
         checklistDict[".github/workflows"] = "Missing";
       } else {
@@ -192,7 +232,15 @@ function checkBestPractices(data) {
   return checklistDict;
 }
 
-// **In Progress**
+/**
+ * @function displayData
+ * @description Render a checklist as HTML list items (<li>) inside a given <ul> element.
+ * @param {Object} checklist A dictionary where keys are best practice items and values are:
+ *  - "Found" / "Missing" for files/directories.
+ *  - "Yes" / "No" for whether the latest commit was within the last 6 months.
+ * @param {HTMLElement} element The ul element where the checklist will be appended.
+ * @returns {void} Appends <li> elements to the provided HTML element; does not return anything.
+ */
 function displayData(checklist, element) {
   for (const key in checklist) {
     const li = document.createElement("li");
