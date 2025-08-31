@@ -6,11 +6,14 @@ Open-Source Health Dashboard is a web application that analyzes a public GitHub 
 
 ## Run with Docker
 
-The application is containerized for easy setup and consistent execution. To run it locally, simply execute `docker-compose up`, which will build and start the containerized environment with all dependencies and configuration already in place.
+- Run the container:
+  - `docker-compose up`
 
 ## Commits
 
-To ensure code quality, commits must be made via the bash terminal so that Husky and lint-staged hooks are executed. Stage your changes with `git add .` and then commit with `git commit -m "Message here"`. This ensures that JavaScript code is automatically checked and fixed before it enters the repository.
+- To ensure code quality, commits must be made via the bash terminal so that Husky and lint-staged hooks are executed. Run the following:
+  - `git add .`
+  - `git commit -m "Message here"`
 
 ## Design Decisions
 
