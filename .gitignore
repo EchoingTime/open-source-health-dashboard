@@ -1,0 +1,44 @@
+# --- Node.js ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# --- Logs ---
+logs
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# --- Runtime data ---
+lib-cov
+*.lcov
+
+# --- Build / Dist ---
+dist/
+build/
+coverage/
+.cache/
+.tmp/
+
+# --- System / Editor files ---
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+*.iml
+
+# --- Windows ---
+desktop.ini
+
+# --- Docker ---
+docker-data/
+
+# --- Optional caches (safe to ignore if they appear) ---
+.npm/
+.eslintcache
