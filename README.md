@@ -2,24 +2,16 @@
 
 ## Overview
 
-A web application that analyzes a public GitHub repository and provides a "health report" on its open-source best practices.
+Open-Source Health Dashboard is a web application that analyzes a public GitHub repository and provides a health report on its open-source best practices, giving developers and maintainers insights into code quality and repository management.
 
 ## Run with Docker
 
-- Run the container:
-  - `docker-compose up`
+The application is containerized for easy setup and consistent execution. To run it locally, simply execute `docker-compose up`, which will build and start the containerized environment with all dependencies and configuration already in place.
 
 ## Commits
 
-- Must commit via bash terminal to have husky and lint-stage to work, then run:
-  - `git add .`
-  - `git commit -m "Message here"`
+To ensure code quality, commits must be made via the bash terminal so that Husky and lint-staged hooks are executed. Stage your changes with `git add .` and then commit with `git commit -m "Message here"`. This ensures that JavaScript code is automatically checked and fixed before it enters the repository.
 
 ## Design Decisions
 
-- **File Structure:** All static frontend files are grouped within the `website/` folder to keep presentation logic separated from infrastructure/configuration.
-- **Containerization:** App runs through `Dockerfile` and `docker-compose.yml` to ensure a reproducible environment across different systems.
-- **CI:** GitHub Actions workflow (`.github/workflows/ci.yml`) runs linting and placeholder tests on each push to `main`, enforcing code quality.
-- **Linting & Pre-commit Hooks:** ESLint is configured (`eslint.config.mjs`) with Husky/lint-staged to automatically check and fix JavaScript code style before commits.
-- **Nginx for Serving:** `nginx.conf` is used to serve the static files efficiently in production.
-- **Dependency Mangement:** Node.js (`package.json`) is used for development tooling (linting, hooks), while runtime is browser-based, avoiding any unnecessary server-side complexity.
+The project separates static frontend files into a `website/` folder to keep presentation logic isolated from infrastructure and configuration. It uses Docker and `docker-compose.yml` for reproducible environments and Nginx to serve static files efficiently in production. Continuous integration is enforced through a GitHub Actions workflow (`.github/workflows/ci.yml`) that runs linting and placeholder tests on each push to `main`. ESLint, configured via `eslint.config.mjs`, along with Husky and lint-staged, automatically checks and fixes code style before commits. Node.js is used solely for development tooling, while the application runs entirely in the browser to avoid unnecessary server-side complexity.
